@@ -16,6 +16,7 @@ gem 'haml-rails'
 gem 'jquery-rails'
 gem 'materialize-sass', '~> 1.0.0'
 gem 'material_icons'
+gem 'rails-i18n'
 
 group :development, :test do
   gem 'mysql2', '~> 0.4.4'

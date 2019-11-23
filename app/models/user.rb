@@ -5,7 +5,7 @@ class User < ApplicationRecord
   has_many :cleaning_places, through: :roles
 
   enum gender: { male: 0, female: 1 }
-  validates :name, presence: true, uniqueness: true, format: { with: /\A@[a-z]+\z/ }
+  validates :name, presence: true, uniqueness: true, format: { with: /\A@[a-z._-]+\z/ }
   validates :gender, presence: true
 
   after_create :create_roles

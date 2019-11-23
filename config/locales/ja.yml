@@ -1,0 +1,9 @@
+ja:
+  activerecord:
+    attributes:
+      user:
+        name: 名前
+        gender: 性別
+      cleaning_place:
+        name: 場所名
+        person_in_charge: 担当者名

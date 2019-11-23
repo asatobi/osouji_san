@@ -8,9 +8,9 @@ class CleaningPlace < ApplicationRecord
 
   after_create :create_roles
 
-  FEMALE_TOILET_ID = CleaningPlace.where(name: 'トイレ(女性)').pluck(:id)
-  MALE_TOILET_ID = CleaningPlace.where(name: ['トイレ(男性①)', 'トイレ(男性②)']).pluck(:id)
-  WATERING_ID = CleaningPlace.where(name: '水やり').pluck(:id)
+  FEMALE_TOILET_ID = 1
+  MALE_TOILET_ID = [2, 3]
+  WATERING_ID = 13
 
   def create_roles
     users = User.all

@@ -30,6 +30,9 @@ class CleaningPlacesController < ApplicationController
   def shuffle
     users = User.where(id: params['user']).to_a
     cleaning_places = CleaningPlace.all.shuffle
+    if cleaning_places.count > users.count
+      cleaning_places = CleaningPlace.where.not(id: CleaningPlace::WATERING_ID).shuffle
+    end
     begin
       cleaning_places.each do |place|
         break if users.empty?
@@ -39,22 +42,19 @@ class CleaningPlacesController < ApplicationController
         place.save!
         users.delete_if { |user| user.id == role.user_id }
       end
-      watering = CleaningPlace.where(id: CleaningPlace::WATERING_ID).pluck(:person_in_charge)
-      if CleaningPlace.where(person_in_charge: nil).present? && !watering.empty?
-        raise
-      end
     rescue StandardError => e
       logger.debug e.message
       logger.debug 'もう一度シャッフル!'
       redirect_to shuffle_cleaning_places_path('user' => params['user'])
     else
-      cleaning_places_for_today = CleaningPlace.where.not(person_in_charge: nil)
-      cleaning_places_for_today.each do |place|
-        user = User.find_by(name: place.person_in_charge)
-        place.roles.find_by(user_id: user.id).increment!(:count)
-      end
       redirect_to :root
     end
+  end
+
+  # TODO: mattermostへの送信部分未実装
+  def send_to_matermost
+    increment_counter
+    redirect_to :root, notice: '送信しました'
   end
 
   def destroy
@@ -75,5 +75,13 @@ class CleaningPlacesController < ApplicationController
 
   def params_cleaning_place
     params.require(:cleaning_place).permit(:name)
+  end
+
+  def increment_counter
+    cleaning_places_for_today = CleaningPlace.where.not(person_in_charge: nil)
+    cleaning_places_for_today.each do |place|
+      user = User.find_by(name: place.person_in_charge)
+      place.roles.find_by(user_id: user.id).increment!(:count)
+    end
   end
 end

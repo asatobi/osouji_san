@@ -10,6 +10,7 @@ $secondary-color: color("teal", "lighten-2") !default;
 @import 'materialize';
 
 .notifications{
+  margin-top: 20px;
   font-weight: bold;
   font-size: 30px;
   text-align: center;
@@ -18,7 +19,7 @@ $secondary-color: color("teal", "lighten-2") !default;
   color:#ef5350;
 }
 .notice{
-  color:#4db6ac;
+  color:#8d6e63;
 }
 .nav-wrapper{
   background-color: #4db6ac;

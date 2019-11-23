@@ -1,0 +1,74 @@
+.container
+  %h1 お掃除担当表
+  .row
+    -# .col.s6
+      -# %p ぶろっく
+      -# -if @user && @user.errors.any?
+      -#   %ul
+      -#     -@user.errors.full_messages.each do |msg|
+      -#       %li=msg
+    .col.s4
+      =form_with local: true, url: cleaning_places_shuffle_url, method: :get do |f|
+        %table
+          %thead
+            %tr
+              %th{style: 'text-align: center;'} Name
+              %th
+              %th
+          -@users.each do |user|
+            %tr
+              %td
+                =f.label :user, value: user.id do
+                  =f.check_box :user, {multiple: true, :checked => true, id: "user_#{user.id}" , include_hidden: false}, user.id, ''
+                  %span=user.name
+              %td
+                =link_to(edit_user_path(user)) do
+                  %i.material-icons edit
+              %td
+                =link_to(user_path(user), {method: 'delete'}) do
+                  %i.material-icons delete_forever
+          =f.button'分担する(不在の場合はチェク外して下さい)', class: "waves-effect waves-light btn"
+      .input-field
+        = form_with local: true, model: @user do |f|
+          - if @user.errors.any?
+            .alert.alert-error
+              %button.close(type="button" data-dismiss="alert") &times;
+              %ul
+                -@user.errors.full_messages.uniq.each do |msg|
+                  %li=msg
+          %table
+            %tr
+              %td
+                =f.label :name
+                =f.text_field :name, value: '@'
+              %td
+                = f.label :gender_male, '男' do
+                  = f.radio_button :gender, :male, inline: true
+                  %span 男
+              %td
+                = f.label :gender_female, '女' do
+                  = f.radio_button :gender, :female, inline: true
+                  %span 女
+              %td
+                = f.submit '追加', class: "waves-effect waves-light btn"
+      -# .input-field.role
+      -#   = form_with local: true, model: Role.new do |f|
+      -#     %table
+      -#       %tr
+      -#         %td
+      -#           =f.label :place
+      -#           =f.text_field :place
+      -#         %td
+      -#           = f.submit '追加', class: "waves-effect waves-light btn"
+
+    .col.s6{style: 'margin-left: 80px;'}
+      %h4="#{@date}の担当"
+      %table.striped
+        %thead
+          %tr
+            %th='場所'
+            %th='担当者'
+        - @cleaning_places.each do |place|
+          %tr
+            %td=place.name
+            %td=place.person

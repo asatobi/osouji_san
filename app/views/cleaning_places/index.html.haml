@@ -5,10 +5,12 @@
       %table.striped
         %thead
           %tr
+            %th ID
             %th 場所
         %tbody
           - @cleaning_places.each do |place|
             %tr
+              %td=place.id
               %td=place.name
               %td
                 =link_to(cleaning_places_path(id: place.id)) do
@@ -19,8 +21,8 @@
             - if place == @cleaning_place
               %tr
                 %td
-                  = form_with local: true, model: @cleaning_place do |f|
-                    =f.label :name
-                    =f.text_field :name
-                    = f.submit '更新', class: "waves-effect waves-light btn"
+                = form_with local: true, model: @cleaning_place do |f|
+                  =f.label :name
+                  %td=f.text_field :name
+                  %td= f.submit '更新', class: "waves-effect waves-light btn"
       = render 'cleaning_places/form'

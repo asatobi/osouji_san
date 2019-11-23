@@ -8,6 +8,8 @@
     = stylesheet_link_tag 'application', media: 'all'
     = javascript_pack_tag 'application'
   %body
+    = render 'layouts/navbar'
+
     .notifications
       - flash.each do |key, value|
         = content_tag(:div, value, class: key)

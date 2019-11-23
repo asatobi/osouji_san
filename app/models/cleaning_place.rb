@@ -8,16 +8,16 @@ class CleaningPlace < ApplicationRecord
 
   after_create :create_roles
 
-  FEMALE_TOILET_ID= CleaningPlace.where(name: 'トイレ(女性)').pluck(:id)
+  FEMALE_TOILET_ID = CleaningPlace.where(name: 'トイレ(女性)').pluck(:id)
   MALE_TOILET_ID = CleaningPlace.where(name: ['トイレ(男性①)', 'トイレ(男性②)']).pluck(:id)
   WATERING_ID = CleaningPlace.find_by(name: '水やり').id
 
   def create_roles
     users = User.all
-    if users.present?
-      users.each do |user|
-        role.create!(user_id: user.id)
-      end
+    return unless users.present?
+
+    users.each do |user|
+      roles.create!(user_id: user.id)
     end
   end
 end

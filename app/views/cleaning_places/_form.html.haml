@@ -1,0 +1,9 @@
+.input-field.role
+  = form_with local: true, model: CleaningPlace.new do |f|
+    %table
+      %tr
+        %td
+          =f.label :name
+          =f.text_field :name
+        %td
+          = f.submit '追加', class: "waves-effect waves-light btn"

@@ -1,6 +1,12 @@
+# frozen_string_literal: true
+
 Rails.application.routes.draw do
   root to: 'home#index'
-  get 'cleaning_places/shuffle'
-  resources :users
 
+  resources :users
+  resources :cleaning_places do
+    collection do
+      get 'shuffle'
+    end
+  end
 end

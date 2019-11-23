@@ -17,6 +17,7 @@ class User < ApplicationRecord
       cleaning_places = CleaningPlace.where.not(id: CleaningPlace::FEMALE_TOILET_ID)
     end
     return unless cleaning_places.present?
+
     cleaning_places.each do |place|
       roles.create!(cleaning_place_id: place.id)
     end

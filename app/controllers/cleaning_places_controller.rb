@@ -1,7 +1,31 @@
 # frozen_string_literal: true
 
 class CleaningPlacesController < ApplicationController
-  before_action :clear_person_in_charge
+  before_action :clear_person_in_charge, only: :shuffle
+
+  def index
+    if params[:id]
+      set_cleaning_place
+    end
+    @cleaning_places = CleaningPlace.all
+  end
+
+  def create
+    cleaning_place = CleaningPlace.new(params_cleaning_place)
+    begin
+      cleaning_place.save!
+      redirect_to request.referer, notice: "掃除場所に#{cleaning_place.name}を追加しました"
+    rescue StandardError => e
+      logger.debug e.message
+      redirect_to request.referer, alert: cleaning_place.errors.full_messages
+    end
+  end
+
+  def update
+    cleaning_place = CleaningPlace.find(params[:id])
+    cleaning_place.update(params_cleaning_place)
+    redirect_to action: :index
+  end
 
   def shuffle
     users = User.where(id: params['user']).to_a
@@ -9,6 +33,7 @@ class CleaningPlacesController < ApplicationController
     begin
       cleaning_places.each do |place|
         break if users.empty?
+
         role = Role.where(cleaning_place_id: place.id, user_id: users.pluck(:id)).order(:count).first
         place.person_in_charge = role.user.name
         place.save!
@@ -18,9 +43,10 @@ class CleaningPlacesController < ApplicationController
       if CleaningPlace.where(person_in_charge: nil).present? && !watering.nil?
         raise
       end
-    rescue StandardError
-      logger.debug 'もう一回'
-      redirect_to cleaning_places_shuffle_path('user' => params['user'])
+    rescue StandardError => e
+      logger.debug e.message
+      logger.debug 'もう一度シャッフル!'
+      redirect_to shuffle_cleaning_places_path('user' => params['user'])
     else
       cleaning_places_for_today = CleaningPlace.where.not(person_in_charge: nil)
       cleaning_places_for_today.each do |place|
@@ -31,7 +57,23 @@ class CleaningPlacesController < ApplicationController
     end
   end
 
+  def destroy
+    cleaning_place = CleaningPlace.find(params[:id])
+    cleaning_place.destroy!
+    redirect_to request.referer, notice: "#{cleaning_place.name}を削除しました"
+  end
+
+  private
+
+  def set_cleaning_place
+    @cleaning_place = CleaningPlace.find(params[:id])
+  end
+
   def clear_person_in_charge
     CleaningPlace.update_all(person_in_charge: nil)
+  end
+
+  def params_cleaning_place
+    params.require(:cleaning_place).permit(:name)
   end
 end

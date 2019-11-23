@@ -2,7 +2,7 @@
   %h1 お掃除担当表
   .row
     .col.s4
-      =form_with local: true, url: cleaning_places_shuffle_url, method: :get do |f|
+      =form_with local: true, url: shuffle_cleaning_places_url, method: :get do |f|
         %table
           %thead
             %tr
@@ -19,7 +19,7 @@
                 =link_to(edit_user_path(user)) do
                   %i.material-icons edit
               %td
-                =link_to(user_path(user), {method: 'delete'}) do
+                =link_to(user_path(user), method: :delete, data: { confirm: '削除しますか？' }) do
                   %i.material-icons delete_forever
           =f.button'分担する(不在の場合はチェク外して下さい)', class: "waves-effect waves-light btn"
       .input-field
@@ -45,24 +45,24 @@
                   %span 女
               %td
                 = f.submit '追加', class: "waves-effect waves-light btn"
-      -# .input-field.role
-      -#   = form_with local: true, model: Role.new do |f|
-      -#     %table
-      -#       %tr
-      -#         %td
-      -#           =f.label :place
-      -#           =f.text_field :place
-      -#         %td
-      -#           = f.submit '追加', class: "waves-effect waves-light btn"
 
     .col.s6{style: 'margin-left: 80px;'}
       %h4="#{@date}の担当"
       %table.striped
         %thead
           %tr
-            %th='場所'
-            %th='担当者'
+            %th 場所
+            %th 担当者
         - @cleaning_places.each do |place|
           %tr
             %td=place.name
             %td=place.person_in_charge
+      .input-field.role
+        = form_with local: true, model: CleaningPlace.new do |f|
+          %table
+            %tr
+              %td
+                =f.label :name
+                =f.text_field :name
+              %td
+                = f.submit '追加', class: "waves-effect waves-light btn"

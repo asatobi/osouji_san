@@ -1,0 +1,26 @@
+.container
+  %h1 掃除場所一覧
+  .row
+    .col.s7
+      %table.striped
+        %thead
+          %tr
+            %th 場所
+        %tbody
+          - @cleaning_places.each do |place|
+            %tr
+              %td=place.name
+              %td
+                =link_to(cleaning_places_path(id: place.id)) do
+                  %i.material-icons edit
+              %td
+                =link_to(cleaning_place_path(place), method: :delete, data: { confirm: '削除しますか？' }) do
+                  %i.material-icons delete_forever
+            - if place == @cleaning_place
+              %tr
+                %td
+                  = form_with local: true, model: @cleaning_place do |f|
+                    =f.label :name
+                    =f.text_field :name
+                    = f.submit '更新', class: "waves-effect waves-light btn"
+      = render 'cleaning_places/form'

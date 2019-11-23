@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 cleaning_places = [
   'トイレ(女性)',
   'トイレ(男性①)',
@@ -32,9 +34,9 @@ users = {
 }
 
 ActiveRecord::Base.transaction do
-  # cleaning_places.each do |cleaning_place|
-  #   CleaningPlace.create!(name: cleaning_place)
-  # end
+  cleaning_places.each do |cleaning_place|
+    CleaningPlace.create!(name: cleaning_place)
+  end
 
   users.each do |name, gender|
     User.create!(

@@ -6,6 +6,7 @@ class HomeController < ApplicationController
     @user = User.new
     @users = User.all
     @cleaning_places = CleaningPlace.all
+    return if @cleaning_places.empty?
     @date = @cleaning_places[0].updated_at.strftime('%m月 %d日')
   end
 end

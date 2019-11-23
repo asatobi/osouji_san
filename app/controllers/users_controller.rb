@@ -8,7 +8,7 @@ class UsersController < ApplicationController
       @user.save!
       redirect_to :root
     rescue StandardError
-      redirect_to :root
+      redirect_to :root, alert: @user.errors.full_messages
     end
   end
 

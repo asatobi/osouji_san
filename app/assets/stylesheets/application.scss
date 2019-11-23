@@ -8,3 +8,15 @@
 $primary-color: color("blue", "lighten-2") !default;
 $secondary-color: color("teal", "lighten-2") !default;
 @import 'materialize';
+
+.notifications{
+  font-weight: bold;
+  font-size: 30px;
+  text-align: center;
+}
+.alert{
+  color:#FF3333;
+}
+.notice{
+  color:#33CC99;
+}

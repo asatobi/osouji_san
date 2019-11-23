@@ -1,18 +1,12 @@
 .container
   %h1 お掃除担当表
   .row
-    -# .col.s6
-      -# %p ぶろっく
-      -# -if @user && @user.errors.any?
-      -#   %ul
-      -#     -@user.errors.full_messages.each do |msg|
-      -#       %li=msg
     .col.s4
       =form_with local: true, url: cleaning_places_shuffle_url, method: :get do |f|
         %table
           %thead
             %tr
-              %th{style: 'text-align: center;'} Name
+              %th{style: 'text-align: center;'} 名前
               %th
               %th
           -@users.each do |user|
@@ -71,4 +65,4 @@
         - @cleaning_places.each do |place|
           %tr
             %td=place.name
-            %td=place.person
+            %td=place.person_in_charge

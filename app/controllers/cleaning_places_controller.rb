@@ -39,8 +39,8 @@ class CleaningPlacesController < ApplicationController
         place.save!
         users.delete_if { |user| user.id == role.user_id }
       end
-      watering = CleaningPlace.find(CleaningPlace::WATERING_ID).person_in_charge
-      if CleaningPlace.where(person_in_charge: nil).present? && !watering.nil?
+      watering = CleaningPlace.where(id: CleaningPlace::WATERING_ID).pluck(:person_in_charge)
+      if CleaningPlace.where(person_in_charge: nil).present? && !watering.empty?
         raise
       end
     rescue StandardError => e

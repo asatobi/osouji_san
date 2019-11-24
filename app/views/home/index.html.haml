@@ -24,12 +24,6 @@
           =f.button'分担する(不在の場合はチェク外して下さい)', class: "waves-effect waves-light btn"
       .input-field
         = form_with local: true, model: @user do |f|
-          - if @user.errors.any?
-            .alert.alert-error
-              %button.close(type="button" data-dismiss="alert") &times;
-              %ul
-                -@user.errors.full_messages.uniq.each do |msg|
-                  %li=msg
           %table
             %tr
               %td

@@ -1,0 +1,19 @@
+.container
+  %h1 編集
+  .input-field
+    = form_with local: true, model: @user do |f|
+      %table
+        %tr
+          %td
+            =f.label :name
+            =f.text_field :name
+          %td
+            = f.label :gender_male, '男' do
+              = f.radio_button :gender, :male, inline: true
+              %span 男
+          %td
+            = f.label :gender_female, '女' do
+              = f.radio_button :gender, :female, inline: true
+              %span 女
+          %td
+            = f.submit '更新', class: "waves-effect waves-light btn"

@@ -12,6 +12,17 @@ class UsersController < ApplicationController
     end
   end
 
+  def edit
+    @user = User.find(params[:id])
+  end
+
+  def update
+    user = User.find(params[:id])
+    user.update(params_user)
+    notice = '更新しました' if user.saved_change_to_updated_at?
+    redirect_to :root, notice: notice
+  end
+
   def destroy
     user = User.find(params[:id])
     user.destroy!

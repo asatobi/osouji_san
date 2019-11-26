@@ -54,7 +54,7 @@ class CleaningPlacesController < ApplicationController
     end
   end
 
-  def send_to_matermost
+  def send_to_mattermost
     cleaning_places_for_today = CleaningPlace.where.not(person_in_charge: nil).order(:name)
     places_and_people = cleaning_places_for_today.pluck(:name, :person_in_charge)
     mattermost = Mattermost.new

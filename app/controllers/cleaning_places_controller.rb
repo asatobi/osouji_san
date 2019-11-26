@@ -4,9 +4,7 @@ class CleaningPlacesController < ApplicationController
   before_action :clear_person_in_charge, only: :shuffle
 
   def index
-    if params[:id]
-      set_cleaning_place
-    end
+    set_cleaning_place if params[:id]
     @cleaning_places = CleaningPlace.all
   end
 
@@ -17,14 +15,19 @@ class CleaningPlacesController < ApplicationController
       redirect_to request.referer, notice: "掃除場所に#{cleaning_place.name}を追加しました"
     rescue StandardError => e
       logger.debug e.message
-      redirect_to request.referer, alert: cleaning_place.errors.full_messages
+      redirect_to request.referer, alert: cleaning_place.errors.full_messages.join(',')
     end
   end
 
   def update
     cleaning_place = CleaningPlace.find(params[:id])
-    cleaning_place.update(params_cleaning_place)
-    redirect_to action: :index
+    begin
+      cleaning_place.update!(params_cleaning_place)
+      redirect_to action: :index
+    rescue StandardError => e
+      logger.debug e.message
+      redirect_to request.referer, alert: cleaning_place.errors.full_messages.join(',')
+    end
   end
 
   def shuffle
@@ -51,10 +54,17 @@ class CleaningPlacesController < ApplicationController
     end
   end
 
-  # TODO: mattermostへの送信部分未実装
-  def send_to_matermost
-    increment_counter
-    redirect_to :root, notice: '送信しました'
+  def send_to_mattermost
+    cleaning_places_for_today = CleaningPlace.where.not(person_in_charge: nil).order(:name)
+    places_and_people = cleaning_places_for_today.pluck(:name, :person_in_charge)
+    mattermost = Mattermost.new
+    message = mattermost.make_message(places_and_people)
+    if mattermost.send(message)
+      increment_counter(cleaning_places_for_today)
+      redirect_to :root, notice: '送信しました'
+    else
+      redirect_to :root, notice: '送信に失敗しました'
+    end
   end
 
   def destroy
@@ -77,8 +87,7 @@ class CleaningPlacesController < ApplicationController
     params.require(:cleaning_place).permit(:name)
   end
 
-  def increment_counter
-    cleaning_places_for_today = CleaningPlace.where.not(person_in_charge: nil)
+  def increment_counter(cleaning_places_for_today)
     cleaning_places_for_today.each do |place|
       user = User.find_by(name: place.person_in_charge)
       place.roles.find_by(user_id: user.id).increment!(:count)

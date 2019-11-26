@@ -8,7 +8,7 @@ class UsersController < ApplicationController
       redirect_to :root, notice: "#{user.name}さんを追加しました"
     rescue StandardError => e
       logger.debug e.message
-      redirect_to :root, alert: user.errors.full_messages
+      redirect_to :root, alert: user.errors.full_messages.join(',')
     end
   end
 
@@ -18,9 +18,15 @@ class UsersController < ApplicationController
 
   def update
     user = User.find(params[:id])
-    user.update(params_user)
-    notice = '更新しました' if user.saved_change_to_updated_at?
-    redirect_to :root, notice: notice
+    begin
+      user.update!(params_user)
+      notice = '更新しました' if user.saved_change_to_updated_at?
+      redirect_to :root, notice: notice
+    rescue StandardError => e
+      logger.debug e.message
+      redirect_to edit_user_path(user), alert: user.errors.full_messages.join(',')
+    end
+
   end
 
   def destroy

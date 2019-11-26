@@ -7,7 +7,7 @@ Rails.application.routes.draw do
   resources :cleaning_places do
     collection do
       get 'shuffle'
-      get 'send_to_matermost'
+      get 'send_to_mattermost'
     end
   end
 end

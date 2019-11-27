@@ -5,7 +5,7 @@ class CleaningPlacesController < ApplicationController
 
   def index
     set_cleaning_place if params[:id]
-    @cleaning_places = CleaningPlace.all
+    @cleaning_places = CleaningPlace.order(:id).all
   end
 
   def create

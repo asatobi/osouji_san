@@ -8,8 +8,10 @@ class CleaningPlace < ApplicationRecord
 
   after_create :create_roles
 
+  scope :order_name, -> { order('name COLLATE "C" ASC') }
+
   FEMALE_TOILET_ID = 1
-  MALE_TOILET_ID = [2, 3]
+  MALE_TOILET_ID = [2, 3].freeze
   WATERING_ID = 13
 
   def create_roles
